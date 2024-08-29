@@ -1,17 +1,16 @@
-package com.kevin.emazon_users.infraestructure.mapper;
+package com.kevin.emazon_users.application.mapper;
 
-
+import com.kevin.emazon_users.application.dto.UserDto;
 import com.kevin.emazon_users.domain.model.User;
-import com.kevin.emazon_users.infraestructure.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
-public interface IUserEntityMapper {
+public interface IUserDtoMapper {
 
-    User toUser(UserEntity userEntity);
+    User toUser(UserDto userDto);
 
-    UserEntity toUserEntity(User user);
+    UserDto toUserDto(User user);
 }
