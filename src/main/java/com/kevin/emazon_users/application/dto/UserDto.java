@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 
 
 @AllArgsConstructor
@@ -25,7 +24,7 @@ public class UserDto {
 
     @NotNull(message = ValidationErrorMsg.NN_IDN)
     @NotBlank(message = ValidationErrorMsg.NB_IDN)
-    @Pattern(regexp = ValidationErrorMsg.VALID_IDN_PATTERN)
+    @Pattern(regexp = ValidationErrorMsg.VALID_IDN_PATTERN, message = ValidationErrorMsg.IV_PAT)
     private String identificationNumber;
 
     @NotNull(message = ValidationErrorMsg.NN_MBN)
@@ -35,7 +34,8 @@ public class UserDto {
     private String mobileNumber;
 
     @NotNull(message = ValidationErrorMsg.NN_DT)
-    private LocalDate date;
+    @NotBlank(message = ValidationErrorMsg.NB_DT)
+    private String date;
 
     @NotNull(message = ValidationErrorMsg.NN_E)
     @NotBlank(message = ValidationErrorMsg.NB_E)

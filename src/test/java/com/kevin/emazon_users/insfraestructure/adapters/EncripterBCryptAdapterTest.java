@@ -1,5 +1,5 @@
 package com.kevin.emazon_users.insfraestructure.adapters;
-import com.kevin.emazon_users.infraestructure.adapters.security.EncripterBCryptAdapter;
+import com.kevin.emazon_users.infraestructure.adapters.EncripterBCryptAdapter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

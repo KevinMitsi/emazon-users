@@ -2,7 +2,7 @@ package com.kevin.emazon_users.infraestructure.controller.exceptionhandler;
 
 
 import com.kevin.emazon_users.application.dto.ExceptionResponseDto;
-import com.kevin.emazon_users.infraestructure.exception.AlreadyCreatedUserException;
+import com.kevin.emazon_users.infraestructure.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +14,7 @@ import java.util.List;
 @RestControllerAdvice
 public class ExceptionHandlerController {
     @ExceptionHandler(AlreadyCreatedUserException.class)
-    public ResponseEntity<ExceptionResponseDto> inCaseThrowingCategoryException(Exception e){
+    public ResponseEntity<ExceptionResponseDto> inCaseThrowingAlreadyCreatedUserException(Exception e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponseDto("AlreadyCreatedUserException", e.getMessage(), HttpStatus.BAD_REQUEST));
     }
 
@@ -24,4 +24,25 @@ public class ExceptionHandlerController {
                 stream().
                 map(ex -> new ExceptionResponseDto("Error en la creación del campo: "+ex.getField() ,ex.getDefaultMessage(), HttpStatus.BAD_REQUEST)).toList());
     }
+
+    @ExceptionHandler(InvalidDatePattern.class)
+    public ResponseEntity<ExceptionResponseDto> inCaseThrowingInvalidDatePattern(Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponseDto("InvalidDatePatternException", e.getMessage(), HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(IlegalAgeException.class)
+    public ResponseEntity<ExceptionResponseDto> inCaseThrowingIlegalAge(Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponseDto("IlegalAgeException", e.getMessage(), HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(NotFoundRoleException.class)
+    public ResponseEntity<ExceptionResponseDto> inCaseThrowingNotFoundRoleException(Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponseDto("NotFoundRoleException", e.getMessage(), HttpStatus.BAD_REQUEST));
+    }
+    @ExceptionHandler(NotFoundUserException.class)
+    public ResponseEntity<ExceptionResponseDto> inCaseThrowingNotFounUserException(Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponseDto("NotFoundUserException", e.getMessage(), HttpStatus.BAD_REQUEST));
+    }
+
+
 }

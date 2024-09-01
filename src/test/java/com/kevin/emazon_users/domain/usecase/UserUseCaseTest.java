@@ -1,6 +1,7 @@
 package com.kevin.emazon_users.domain.usecase;
 
-import com.kevin.emazon_users.domain.model.User;
+import com.kevin.emazon_users.domain.model.RoleEnum;
+import com.kevin.emazon_users.domain.model.UserModel;
 import com.kevin.emazon_users.domain.spi.IUserPersistentPort;
 import com.kevin.emazon_users.domain.spi.security.IEncryptPort;
 import com.kevin.emazon_users.infraestructure.exception.AlreadyCreatedUserException;
@@ -11,7 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,28 +34,28 @@ class UserUseCaseTest {
 
     @Test
     void testSaveUser() {
-        User user = new User(null,"John", "Doe", "123456789", "+1234567890", LocalDate.now().minusYears(20), "john.doe@example.com", "password", 1L);
-        when(userPersistentPort.exist(user.getIdentificationNumber(), user.getEmail())).thenReturn(false);
+        UserModel userModel = new UserModel(null,"John", "Doe", "123456789", "+1234567890", new Date(), "john.doe@example.com", "password", RoleEnum.fromId(1L));
+        when(userPersistentPort.exist(userModel.getIdentificationNumber(), userModel.getEmail())).thenReturn(false);
 
-        userUseCase.saveUser(user);
+        userUseCase.saveUser(userModel);
 
-        verify(userPersistentPort, times(1)).saveUser(user);
-        verify(encryptPort, times(1)).encode(user.getPassword());
+        verify(userPersistentPort, times(1)).saveUser(userModel);
+        verify(encryptPort, times(1)).encode(userModel.getPassword());
     }
 
     @Test
     void testSaveUserAlreadyExists() {
-        User user = new User(null,"John", "Doe", "123456789", "+1234567890", LocalDate.now().minusYears(20), "john.doe@example.com", "password", 1L);
-        when(userPersistentPort.exist(user.getIdentificationNumber(), user.getEmail())).thenReturn(true);
+        UserModel userModel = new UserModel(null,"John", "Doe", "123456789", "+1234567890",new Date(), "john.doe@example.com", "password", RoleEnum.fromId(1L));
+        when(userPersistentPort.exist(userModel.getIdentificationNumber(), userModel.getEmail())).thenReturn(true);
 
-        assertThrows(AlreadyCreatedUserException.class, () -> userUseCase.saveUser(user));
+        assertThrows(AlreadyCreatedUserException.class, () -> userUseCase.saveUser(userModel));
     }
 
     @Test
     void testSaveUserUnderage() {
-        User user = new User(null,"John", "Doe", "123456789", "+1234567890", LocalDate.now().minusYears(10), "john.doe@example.com", "password", 1L);
-        when(userPersistentPort.exist(user.getIdentificationNumber(), user.getEmail())).thenReturn(false);
+        UserModel userModel = new UserModel(null,"John", "Doe", "123456789", "+1234567890", new Date(), "john.doe@example.com", "password", RoleEnum.fromId(1L));
+        when(userPersistentPort.exist(userModel.getIdentificationNumber(), userModel.getEmail())).thenReturn(false);
 
-        assertThrows(IlegalAgeException.class, () -> userUseCase.saveUser(user));
+        assertThrows(IlegalAgeException.class, () -> userUseCase.saveUser(userModel));
     }
 }

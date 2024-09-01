@@ -1,5 +1,6 @@
 package com.kevin.emazon_users.insfraestructure.adapters;
-import com.kevin.emazon_users.domain.model.User;
+import com.kevin.emazon_users.domain.model.RoleEnum;
+import com.kevin.emazon_users.domain.model.UserModel;
 import com.kevin.emazon_users.infraestructure.adapters.UserJpaAdapter;
 import com.kevin.emazon_users.infraestructure.entity.UserEntity;
 import com.kevin.emazon_users.infraestructure.repository.IUserRepository;
@@ -10,7 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -29,10 +30,10 @@ class UserJpaAdapterTest {
 
     @Test
     void testSaveUser() {
-        User user = new User(null,"John", "Doe", "123456789", "+1234567890", LocalDate.now().minusYears(20), "john.doe@example.com", "password", 1L);
-        when(userEntityMapper.toUserEntity(user)).thenReturn(new UserEntity());
+        UserModel userModel = new UserModel(null,"John", "Doe", "123456789", "+1234567890", new Date(), "john.doe@example.com", "password", RoleEnum.fromId(1L));
+        when(userEntityMapper.userToUserEntity(userModel)).thenReturn(new UserEntity());
 
-        userJpaAdapter.saveUser(user);
+        userJpaAdapter.saveUser(userModel);
 
         verify(userRepository, times(1)).save(any());
     }

@@ -13,6 +13,7 @@ public class ValidationErrorMsg {
     public static final String VALID_IDN_PATTERN = "^\\d+$";
     public static final String NN_IDN = "NullIdentificationNumberException: El número de identificación no puede ser nulo";
     public static final String NB_IDN = "BlankIdentificationNumberException: El número de identificación no puede estar vacío ni lleno de espacios";
+    public static final String IV_PAT = "InvalidPatterIdentificationNumber: El número de identificación solo puede contener números";
 
 
 
@@ -24,6 +25,7 @@ public class ValidationErrorMsg {
 
 
     public static final String NN_DT = "NullDateException: La fecha de nacimiento no puede ser nula";
+    public static final String NB_DT = "BlankDateException: La fecha de nacimiento no puede estar vacía ni llean de espacios";
 
 
     public static final String NN_E = "NullEmailException: La dirección de correo electrónico no puede ser nula";

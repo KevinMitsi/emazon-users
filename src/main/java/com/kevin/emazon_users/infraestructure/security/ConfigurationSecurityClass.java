@@ -1,4 +1,4 @@
-package com.kevin.emazon_users.infraestructure.config.beans.security;
+package com.kevin.emazon_users.infraestructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,4 +12,6 @@ public class ConfigurationSecurityClass {
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+
 }
