@@ -1,9 +1,12 @@
 package com.kevin.emazon_users.infraestructure.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kevin.emazon_users.domain.model.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+
 
 @Entity
 @Getter
@@ -20,11 +23,13 @@ public class UserEntity {
     private String identificationNumber;
     private String mobileNumber;
     private Date date;
+
     private String email;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "id_role")
-    private RoleEntity role;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum roleEnum;
 
 }

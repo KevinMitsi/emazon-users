@@ -1,0 +1,22 @@
+package com.kevin.emazon_users.infraestructure.security;
+
+import com.kevin.emazon_users.infraestructure.exception.NotFoundUserException;
+import com.kevin.emazon_users.infraestructure.repository.IUserRepository;
+import com.kevin.emazon_users.infraestructure.security.util.SelfMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class JpaUserDetailsService implements UserDetailsService {
+
+    private final IUserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return SelfMapper.toUserModel(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundUserException("Usuario no encontrado")));
+    }
+}

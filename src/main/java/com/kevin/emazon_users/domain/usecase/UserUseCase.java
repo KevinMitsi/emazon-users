@@ -1,14 +1,17 @@
 package com.kevin.emazon_users.domain.usecase;
 
 import com.kevin.emazon_users.domain.api.IUserServicePort;
-import com.kevin.emazon_users.domain.model.User;
+import com.kevin.emazon_users.domain.model.UserModel;
 import com.kevin.emazon_users.domain.spi.IUserPersistentPort;
 import com.kevin.emazon_users.domain.spi.security.IEncryptPort;
+import com.kevin.emazon_users.domain.util.ConstantUtilClass;
 import com.kevin.emazon_users.infraestructure.exception.AlreadyCreatedUserException;
 import com.kevin.emazon_users.infraestructure.exception.IlegalAgeException;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
+
 
 
 public class UserUseCase implements IUserServicePort {
@@ -21,24 +24,27 @@ public class UserUseCase implements IUserServicePort {
     }
 
     @Override
-    public void saveUser(User user) {
-        verifyAndPrepareUser(user);
-        userPersistentPort.saveUser(user);
+    public void saveUser(UserModel userModel) {
+        verifyAndPrepareUser(userModel);
+        userPersistentPort.saveUser(userModel);
     }
 
-    private void verifyAndPrepareUser(User user) {
-        if (userPersistentPort.exist(user.getIdentificationNumber(), user.getEmail())){
+    private void verifyAndPrepareUser(UserModel userModel) {
+        if (userPersistentPort.exist(userModel.getIdentificationNumber(), userModel.getEmail())){
             throw new AlreadyCreatedUserException("Este usuario ya se encuentra creado");
         }
-        if (!verifyAge(user)){
+        if (!verifyAge(userModel)){
             throw new IlegalAgeException("El usuario debe ser mayor de edad para poderse crear");
         }
-        encryptPort.encode(user.getPassword());
+        userModel.setPassword(encryptPort.encode(userModel.getPassword()));
     }
 
-    private boolean verifyAge(User user) {
+    private boolean verifyAge(UserModel userModel) {
+        LocalDate birthDate = userModel.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate today = LocalDate.now();
-        Period period = Period.between(user.getDate(), today);
-        return period.getYears() >= 18;
+
+        int age = Period.between(birthDate, today).getYears();
+
+        return age >= ConstantUtilClass.LEGAL_AGE;
     }
 }

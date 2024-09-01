@@ -1,4 +1,4 @@
-package com.kevin.emazon_users.infraestructure.adapters.security;
+package com.kevin.emazon_users.infraestructure.adapters;
 
 import com.kevin.emazon_users.domain.spi.security.IEncryptPort;
 import lombok.AllArgsConstructor;

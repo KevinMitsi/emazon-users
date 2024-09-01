@@ -1,7 +1,7 @@
 package com.kevin.emazon_users.domain.api;
 
-import com.kevin.emazon_users.domain.model.User;
+import com.kevin.emazon_users.domain.model.UserModel;
 
 public interface IUserServicePort {
-    void saveUser(User user);
+    void saveUser(UserModel userModel);
 }
