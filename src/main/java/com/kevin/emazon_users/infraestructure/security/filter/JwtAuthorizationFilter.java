@@ -35,7 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String header = request.getHeader(HEADER_AUTHORIZATION);
 
         if (header != null && header.startsWith(PREFIX_TOKEN)) {
-            String token = header.replace(PREFIX_TOKEN, "");
+            String token = header.replace("Bearer ", "");
 
             // Aquí validas el token y obtienes el usuario
             String username = getUsernameFromToken(token);

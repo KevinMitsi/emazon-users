@@ -56,6 +56,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         fillInformation(response, token, user);
     }
 
+    private static void fillInformation(HttpServletResponse response, String token, UserDetails user) throws IOException {
+        response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
+        Map<String, String> body = new HashMap<>();
+        body.put("username", user.getUsername());
+        body.put("token", token);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.setStatus(200);
+        response.setContentType(CONTENT_TYPE);
+    }
+
     private Map<String, ?> buildClaims(UserDetails user) {
         Map<String, Object> claimBody = new HashMap<>();
         claimBody.put("username", user.getUsername());
@@ -74,18 +84,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(401);
-        response.setContentType(CONTENT_TYPE);
-    }
-
-    private static void fillInformation(HttpServletResponse response, String token, UserDetails user) throws IOException {
-        response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
-        Map<String, String> body = new HashMap<>();
-        body.put("token", token);
-        body.put("username", user.getUsername());
-        body.put("message", String.format("Hola %s has iniciado sesión con éxito", user.getUsername()));
-
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-        response.setStatus(200);
         response.setContentType(CONTENT_TYPE);
     }
 }
