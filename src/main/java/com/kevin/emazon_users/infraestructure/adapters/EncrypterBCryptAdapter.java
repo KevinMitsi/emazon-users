@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @AllArgsConstructor
 @Repository
-public class EncripterBCryptAdapter implements IEncryptPort {
+public class EncrypterBCryptAdapter implements IEncryptPort {
     private final PasswordEncoder passwordEncoder;
     @Override
     public String encode(String raw) {

@@ -13,10 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
 
+    private static final String NOT_FOUND_USER_MESSAGE = "Usuario no encontrado";
     private final IUserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return SelfMapper.toUserModel(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundUserException("Usuario no encontrado")));
+        return SelfMapper.toUserModel(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundUserException(NOT_FOUND_USER_MESSAGE)));
     }
 }

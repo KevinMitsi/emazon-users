@@ -14,6 +14,8 @@ public enum RoleEnum {
     ROLE_AUX_BODEGA(2L, "ROLE_AUX_BODEGA"),
     ROLE_CLIENTE(3L, "ROLE_CLIENTE");
 
+    public static final String NOT_FOUND_ROLE_BYNAME_MESSAGE = "No se encontró el rol con el nombre: ";
+    public static final String NOT_FOUND_ROLE_BYID_MESSAGE = "No se encontró el rol con el ID: ";
     private final Long id;
     private final String name;
 
@@ -29,7 +31,7 @@ public enum RoleEnum {
                 return roleEnum;
             }
         }
-        throw new NotFoundRoleException("No se encontró el rol con el nombre: " + name);
+        throw new NotFoundRoleException(NOT_FOUND_ROLE_BYNAME_MESSAGE + name);
     }
 
     // Método para obtener un Role por su ID
@@ -39,7 +41,7 @@ public enum RoleEnum {
                 return roleEnum;
             }
         }
-        throw new NotFoundRoleException("No se encontró el rol con el ID: " + id);
+        throw new NotFoundRoleException(NOT_FOUND_ROLE_BYID_MESSAGE + id);
     }
 
     public static List<RoleEnum> getAllRoles() {
