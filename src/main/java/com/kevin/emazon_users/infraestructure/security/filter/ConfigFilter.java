@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class ConfigFilter {
 
+    public static final String ADMINISTRATOR = "ADMINISTRADOR";
     private final JpaUserDetailsService userDetailsService;
 
     // Este método crea un bean de AuthenticationManager a partir de la configuración existente
@@ -36,8 +37,8 @@ public class ConfigFilter {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/user/**").permitAll()
-                        .requestMatchers("/api/v1/user/register/").hasRole("ADMINISTRADOR")
-                        .requestMatchers("/api/v1/user/register/whWorker").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/v1/user/register/").hasRole(ADMINISTRATOR)
+                        .requestMatchers("/api/v1/user/register/whWorker").hasRole(ADMINISTRATOR)
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -46,8 +47,6 @@ public class ConfigFilter {
                 .formLogin(AbstractHttpConfigurer::disable);
         return http.build();
     }
-
-
 }
 
 

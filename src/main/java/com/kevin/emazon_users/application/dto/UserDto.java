@@ -15,6 +15,10 @@ import static com.kevin.emazon_users.application.util.ValidationErrorMsg.*;
 @Getter
 @Setter
 public class UserDto {
+
+    private static final int MAX_SIZE_MOBILE = 13;
+    private static final int MIN_SIZE_MOBILE = 3;
+
     @NotNull(message = NN_NAME)
     @NotBlank(message = NB_NAME)
     private String name;
@@ -31,7 +35,7 @@ public class UserDto {
     @NotNull(message = NN_MBN)
     @NotBlank(message = NB_MBN)
     @Pattern(regexp = VALID_NUMBER_PATTERN, message = BP_MBN)
-    @Size(max = 13, min = 3, message = BS_MBN)
+    @Size(max = MAX_SIZE_MOBILE, min = MIN_SIZE_MOBILE, message = BS_MBN)
     private String mobileNumber;
 
     @NotNull(message = NN_DT)

@@ -29,6 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public static final String ERROR_KEY = "error";
     public static final String MESSAGE_VALUE_FAILED_AUTHENTICATION = "Los datos de inicios de sesión no son válidos";
     public static final String TOKEN_KEY = "token";
+    public static final String ID_CLIENT_KEY = "id";
 
     private final AuthenticationManager authenticationManager;
 
@@ -65,6 +66,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private static void fillInformation(HttpServletResponse response, String token, UserDetails user) throws IOException {
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
+
         Map<String, String> body = new HashMap<>();
         body.put(SPRING_SECURITY_FORM_USERNAME_KEY, user.getUsername());
         body.put(TOKEN_KEY, token);
@@ -75,6 +77,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private Map<String, ?> buildClaims(UserDetails user) {
         Map<String, Object> claimBody = new HashMap<>();
+        
+        if (user instanceof UserModel userModel) {
+            claimBody.put(ID_CLIENT_KEY, userModel.getId());
+        }
+
         claimBody.put(SPRING_SECURITY_FORM_USERNAME_KEY, user.getUsername());
         // Extraer el rol en formato ROLE_
         claimBody.put(ROLE_KEY, user.getAuthorities().iterator().next().getAuthority());

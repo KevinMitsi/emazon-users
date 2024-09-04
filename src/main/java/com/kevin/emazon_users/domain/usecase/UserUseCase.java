@@ -16,7 +16,7 @@ import java.time.ZoneId;
 
 public class UserUseCase implements IUserServicePort {
     public static final String ALREADY_CREATED_USER_EXCEPTION_MESSAGE = "Este usuario ya se encuentra creado";
-    public static final String ILEGAL_AGE_EXCEPTION_MESSAGE = "El usuario debe ser mayor de edad para poderse crear";
+    public static final String ILLEGAL_AGE_EXCEPTION_MESSAGE = "El usuario debe ser mayor de edad para poderse crear";
 
 
     private final IUserPersistentPort userPersistentPort;
@@ -38,7 +38,7 @@ public class UserUseCase implements IUserServicePort {
             throw new AlreadyCreatedUserException(ALREADY_CREATED_USER_EXCEPTION_MESSAGE);
         }
         if (!verifyAge(userModel)){
-            throw new IlegalAgeException(ILEGAL_AGE_EXCEPTION_MESSAGE);
+            throw new IlegalAgeException(ILLEGAL_AGE_EXCEPTION_MESSAGE);
         }
         userModel.setPassword(encryptPort.encode(userModel.getPassword()));
     }
