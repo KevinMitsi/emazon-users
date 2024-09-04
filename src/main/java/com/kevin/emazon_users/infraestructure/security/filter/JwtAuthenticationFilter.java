@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public static final String ERROR_KEY = "error";
     public static final String MESSAGE_VALUE_FAILED_AUTHENTICATION = "Los datos de inicios de sesión no son válidos";
     public static final String TOKEN_KEY = "token";
-    public static final String ID_CLIENT_KEY = "id";
+    public static final String ID_CLIENT_KEY = "id_user";
 
     private final AuthenticationManager authenticationManager;
 
