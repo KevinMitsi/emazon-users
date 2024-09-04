@@ -9,6 +9,8 @@ import com.kevin.emazon_users.domain.model.UserModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.kevin.emazon_users.application.mapper.MyMapper.toUser;
+
 @Service
 @AllArgsConstructor
 public class UserHandlerImpl implements IUserHandler {
@@ -18,16 +20,5 @@ public class UserHandlerImpl implements IUserHandler {
         userServicePort.saveUser(toUser(userDto));
     }
 
-    private UserModel toUser(UserDto userDto) {
-        UserModel userModel = new UserModel();
-        userModel.setName(userDto.getName());
-        userModel.setSurname(userDto.getSurname());
-        userModel.setDate(ConstantUtilClassApplication.convertStringIntoDate(userDto.getDate()));
-        userModel.setEmail(userDto.getEmail());
-        userModel.setMobileNumber(userDto.getMobileNumber());
-        userModel.setIdentificationNumber(userDto.getIdentificationNumber());
-        userModel.setPassword(userDto.getPassword());
-        userModel.setRole(RoleEnum.fromId(userDto.getRole()));
-        return userModel;
-    }
+
 }

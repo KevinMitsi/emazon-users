@@ -18,18 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/user")
 @AllArgsConstructor
 public class UserController {
+    public static final String ROLE_ADMINISTRADOR_KEY = "ROLE_ADMINISTRADOR";
+    public static final String CREATED_ADMIN_CONFIRM_MESSAGE = "Felicidades ha creado el admin: ";
+    public static final String CREATED_WH_CONFIRMATION_MESSAGE = "Felicidades ha creado el Auxiliar: ";
+
+
     private final IUserHandler userHandler;
     @PostMapping("/register")
-    @Secured("ROLE_ADMINISTRADOR")
+    @Secured(ROLE_ADMINISTRADOR_KEY)
     public ResponseEntity<String> createAdmin(@Valid @RequestBody UserDto userDto){
         userHandler.saveUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Felicidades ha creado el admin: "+ userDto.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(CREATED_ADMIN_CONFIRM_MESSAGE + userDto.getName());
     }
+
+
     @PostMapping("/register/whWorker")
-    @Secured("ROLE_ADMINISTRADOR")
+    @Secured(ROLE_ADMINISTRADOR_KEY)
     public ResponseEntity<String> registerNewUser(@Valid @RequestBody UserDto userDto){
         userHandler.saveUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Felicidades ha creado el Auxiliar: "+ userDto.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(CREATED_WH_CONFIRMATION_MESSAGE + userDto.getName());
     }
 
 

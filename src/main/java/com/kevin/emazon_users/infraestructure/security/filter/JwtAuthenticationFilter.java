@@ -19,9 +19,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.kevin.emazon_users.infraestructure.security.util.ConstantsSecurityContext.ROLE_KEY;
 import static com.kevin.emazon_users.infraestructure.security.util.UtilSecurityClass.*;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    public static final String AUTHENTICATION_EXCEPTION_MESSAGE = "No se pudo crear el token de autenticación";
+    public static final String MESSAGE_KEY = "message";
+    public static final String ERROR_KEY = "error";
+    public static final String MESSAGE_VALUE_FAILED_AUTHENTICATION = "Los datos de inicios de sesión no son válidos";
+    public static final String TOKEN_KEY = "token";
+    public static final String ID_CLIENT_KEY = "id";
 
     private final AuthenticationManager authenticationManager;
 
@@ -38,7 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             );
             return authenticationManager.authenticate(authenticationToken);
         } catch (IOException e) {
-            throw new AuthenticationCredentialsNotFoundException("No se pudo crear el token de autenticación");
+            throw new AuthenticationCredentialsNotFoundException(AUTHENTICATION_EXCEPTION_MESSAGE);
         }
     }
 
@@ -58,9 +66,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private static void fillInformation(HttpServletResponse response, String token, UserDetails user) throws IOException {
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
+
         Map<String, String> body = new HashMap<>();
-        body.put("username", user.getUsername());
-        body.put("token", token);
+        body.put(SPRING_SECURITY_FORM_USERNAME_KEY, user.getUsername());
+        body.put(TOKEN_KEY, token);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
         response.setContentType(CONTENT_TYPE);
@@ -68,9 +77,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private Map<String, ?> buildClaims(UserDetails user) {
         Map<String, Object> claimBody = new HashMap<>();
-        claimBody.put("username", user.getUsername());
+        
+        if (user instanceof UserModel userModel) {
+            claimBody.put(ID_CLIENT_KEY, userModel.getId());
+        }
+
+        claimBody.put(SPRING_SECURITY_FORM_USERNAME_KEY, user.getUsername());
         // Extraer el rol en formato ROLE_
-        claimBody.put("role", user.getAuthorities().iterator().next().getAuthority());
+        claimBody.put(ROLE_KEY, user.getAuthorities().iterator().next().getAuthority());
         return claimBody;
     }
 
@@ -79,8 +93,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         Map<String, String> body = new HashMap<>();
-        body.put("message", "error al ingresar los datos de inicios de sesión");
-        body.put("error", failed.getMessage());
+        body.put(MESSAGE_KEY, MESSAGE_VALUE_FAILED_AUTHENTICATION);
+        body.put(ERROR_KEY, failed.getMessage());
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(401);

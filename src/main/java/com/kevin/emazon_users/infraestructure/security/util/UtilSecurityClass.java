@@ -2,7 +2,6 @@ package com.kevin.emazon_users.infraestructure.security.util;
 
 
 import io.jsonwebtoken.security.Keys;
-;
 
 import javax.crypto.SecretKey;
 

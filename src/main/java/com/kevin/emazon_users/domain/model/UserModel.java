@@ -32,7 +32,6 @@ public class UserModel implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Devuelve el rol en formato ROLE_
         return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 

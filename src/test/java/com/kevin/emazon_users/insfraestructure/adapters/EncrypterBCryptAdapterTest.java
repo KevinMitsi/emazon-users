@@ -1,5 +1,5 @@
 package com.kevin.emazon_users.insfraestructure.adapters;
-import com.kevin.emazon_users.infraestructure.adapters.EncripterBCryptAdapter;
+import com.kevin.emazon_users.infraestructure.adapters.EncrypterBCryptAdapter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class EncripterBCryptAdapterTest {
+class EncrypterBCryptAdapterTest {
 
     @InjectMocks
-    private EncripterBCryptAdapter encripterBCryptAdapter;
+    private EncrypterBCryptAdapter encripterBCryptAdapter;
 
     @Mock
     private PasswordEncoder passwordEncoder;
