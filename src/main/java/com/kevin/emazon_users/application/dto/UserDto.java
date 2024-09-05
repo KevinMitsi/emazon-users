@@ -16,6 +16,7 @@ import static com.kevin.emazon_users.application.util.ValidationErrorMsg.*;
 @Setter
 public class UserDto {
 
+
     private static final int MAX_SIZE_MOBILE = 13;
     private static final int MIN_SIZE_MOBILE = 3;
 
