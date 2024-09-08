@@ -52,7 +52,6 @@ public class UserDto {
     @NotBlank(message = NB_PWD)
     private String password;
 
-    @NotNull(message = NN_ROLE)
     private Long role;
 }
 
