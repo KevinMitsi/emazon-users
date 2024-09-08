@@ -2,6 +2,7 @@ package com.kevin.emazon_users.infraestructure.security.filter;
 
 import com.kevin.emazon_users.infraestructure.security.JpaUserDetailsService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +28,8 @@ import static org.springframework.security.web.authentication.UsernamePasswordAu
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JpaUserDetailsService userDetailsService;
+    private static final String EXPIRED_TOKEN_MESSAGE = "Token has expired";
+    private static final String INVALID_TOKEN_MESSAGE = "Invalid token";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
@@ -37,13 +39,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith(PREFIX_TOKEN)) {
             String token = header.replace(PREFIX_TOKEN, "");
 
+            try{
             // Aquí validas el token y obtienes el usuario
             String username = getUsernameFromToken(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // Aquí deberías cargar el usuario y sus autoridades
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (validateToken(token, userDetails, response)) {
+                if (validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
@@ -51,24 +54,32 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                                     userDetails.getAuthorities());
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    //Contexto de seguridad
+                    // Contexto de seguridad
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+            }
+            } catch (ExpiredJwtException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write(EXPIRED_TOKEN_MESSAGE);
+                return ;
+            } catch (JwtException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write(INVALID_TOKEN_MESSAGE);
+                return ;
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private  String getUsernameFromToken(String token) {
+    private String getUsernameFromToken(String token) {
         return Jwts.parser().verifyWith(SECRET_KEY).build()
-                    .parseSignedClaims(token)
-                    .getPayload()
-              .get(SPRING_SECURITY_FORM_USERNAME_KEY, String.class);
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(SPRING_SECURITY_FORM_USERNAME_KEY, String.class);
     }
 
-    private boolean validateToken(String token, UserDetails userDetails, HttpServletResponse response) {
-        try {
+    private boolean validateToken(String token, UserDetails userDetails) {
             Claims claims = Jwts.parser()
                     .verifyWith(SECRET_KEY)
                     .build()
@@ -76,25 +87,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     .getPayload();
 
             String username = claims.get(SPRING_SECURITY_FORM_USERNAME_KEY, String.class);
-            // Obtener el rol único en formato ROLE_
             String roleFromToken = claims.get(ROLE_KEY, String.class);
 
-            // Verificar si el rol en el JWT coincide con las autoridades del usuario
             if (userDetails.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals(roleFromToken))) {
                 return false;
             }
 
             Date expirationDate = claims.getExpiration();
-            if (expirationDate.before(new Date())) {
-                return false;
-            }
-            return username.equals(userDetails.getUsername());
-
-        } catch (JwtException e) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            return false;
-        }
+            return !expirationDate.before(new Date()) && username.equals(userDetails.getUsername());
     }
-
-
 }
