@@ -18,12 +18,14 @@ public class UserController {
     public static final String ROLE_ADMINISTRATOR = "ROLE_ADMINISTRADOR";
     public static final String CREATED_ADMIN_CONFIRM_MESSAGE = "Felicidades ha creado el admin: ";
     public static final String CREATED_WH_CONFIRMATION_MESSAGE = "Felicidades ha creado el Auxiliar: ";
+    public static final String CREATED_CLIENT_CONFIRMATION_MESSAGE = "Felicidades ha creado el Cliente: ";
 
 
     private final IUserHandler userHandler;
     @PostMapping("/register")
     @Secured(ROLE_ADMINISTRATOR)
     public ResponseEntity<String> createAdmin(@Valid @RequestBody UserDto userDto){
+        userDto.setRole(1L);
         userHandler.saveUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CREATED_ADMIN_CONFIRM_MESSAGE + userDto.getName());
     }
@@ -32,8 +34,17 @@ public class UserController {
     @PostMapping("/register/whWorker")
     @Secured(ROLE_ADMINISTRATOR)
     public ResponseEntity<String> registerNewUser(@Valid @RequestBody UserDto userDto){
+        userDto.setRole(2L);
         userHandler.saveUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CREATED_WH_CONFIRMATION_MESSAGE + userDto.getName());
+    }
+
+    @PostMapping("/register/client")
+    @Secured(ROLE_ADMINISTRATOR)
+    public ResponseEntity<String> registerNewClient(@Valid @RequestBody UserDto userDto){
+        userDto.setRole(3L);
+        userHandler.saveUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CREATED_CLIENT_CONFIRMATION_MESSAGE + userDto.getName());
     }
 
 

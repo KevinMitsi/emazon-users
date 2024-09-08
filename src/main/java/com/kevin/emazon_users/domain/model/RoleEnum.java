@@ -3,10 +3,9 @@ package com.kevin.emazon_users.domain.model;
 import com.kevin.emazon_users.infraestructure.exception.NotFoundRoleException;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.List;
+
 import java.util.Objects;
-import java.util.stream.Collectors;
+
 
 @Getter
 public enum RoleEnum {
@@ -44,13 +43,5 @@ public enum RoleEnum {
         throw new NotFoundRoleException(NOT_FOUND_ROLE_BYID_MESSAGE + id);
     }
 
-    public static List<RoleEnum> getAllRoles() {
-        return Arrays.asList(RoleEnum.values());
-    }
 
-    public static List<Long> getAllIds() {
-        return Arrays.stream(values())
-                .map(RoleEnum::getId)
-                .collect(Collectors.toList());
-    }
 }
